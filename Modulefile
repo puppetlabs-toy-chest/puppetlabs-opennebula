@@ -1,0 +1,8 @@
+name 'puppetlabs-opennebula'
+version '0.0.1'
+source 'git://github.com/puppetlabs/puppetlabs-opennebula.git'
+author 'puppetlabs'
+license 'ASL 2.0'
+summary 'OpenNebula Module'
+description 'Manages OpenNebula controllers and node components'
+project_page 'https://github.com/puppetlabs/puppetlabs-opennebula'
