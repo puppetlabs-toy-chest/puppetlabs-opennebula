@@ -24,6 +24,8 @@
 #   *Optional* 
 # [db_name]
 #   *Optional* 
+# [db_port]
+#   *Optional* 
 # [vnc_base_port]
 #   *Optional* 
 # [debug_level]
@@ -61,7 +63,7 @@
 #
 # Copyright 2011 Puppetlabs Inc, unless otherwise noted.
 #
-class opennebula::oned_config (
+class opennebula::oned_conf (
   
   $manager_timer = 15,
   $host_monitoring_interval = 600,
@@ -74,6 +76,7 @@ class opennebula::oned_config (
   $db_user = undef,
   $db_passwd = undef,
   $db_name = undef,
+  $db_port = undef,
   $vnc_base_port = 5900,
   $debug_level = 3,
   $network_size = 254,
