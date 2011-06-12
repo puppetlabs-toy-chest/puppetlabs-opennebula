@@ -1,5 +1,7 @@
 # Install an OpenNebula controller.
 #
+# This installs the controller components for OpenNebula - the oned server.
+#
 # == Parameters
 #
 # [oneadmin_password]
@@ -16,12 +18,16 @@
 #   *Optional* Group the oned daemon runs as.
 # [oneadmin_home]
 #   *Optional* Home directory of oneadmin user.
+# [oned_config]
+#   *Optional* A hash for configuring oned.conf.
 #
 # == Variables
 #
 # N/A
 #
 # == Examples
+#
+# Basic configuration:
 #
 #   class { 'opennebula::controller':
 #     oneadmin_password => "gavilona",
@@ -43,10 +49,12 @@ class opennebula::controller (
   $controller_conf_path = $opennebula::params::controller_conf_path,
   $controller_user = $opennebula::params::controller_user,
   $controller_group = $opennebula::params::controller_group,
-  $oneadmin_home = $opennebula::params::oneadmin_home
+  $oneadmin_home = $opennebula::params::oneadmin_home,
+  $oned_config = undef
 
   ) inherits opennebula::params {
 
+  # Work out other information
   $oneadmin_authfile = "${oneadmin_home}/.one/one_auth"
   $oneadmin_sshkey = "${oneadmin_home}/.ssh/id_rsa"
   $oneadmin_ssh_config = "${oneadmin_home}/.ssh/config"
@@ -58,6 +66,7 @@ class opennebula::controller (
     ensure => installed,
   }
 
+  # Authentication file
   file { $oneadmin_authfile:
     content => "oneadmin:${oneadmin_password}\n",
     owner => $controller_user,
@@ -65,6 +74,10 @@ class opennebula::controller (
     mode => "0640",
     require => Package[$controller_package],
   }
+  
+  ########################
+  # Setup SSH trust keys #
+  ########################
   file { $oneadmin_sshkey:
     content => template("${module_name}/controller_id_rsa"),
     owner => $controller_user,
@@ -79,6 +92,10 @@ class opennebula::controller (
     mode => "0644",
     require => Package[$controller_package],
   }
+  
+  #################
+  # Configuration #
+  #################
   file { $controller_conf_path:
     content => template("${module_name}/oned.conf"),
     owner => "root",
@@ -87,6 +104,9 @@ class opennebula::controller (
     require => Package[$controller_package],
   }
 
+  ################
+  # Oned Service #
+  ################
   service { $controller_service:
     hasstatus => false,
     pattern => "/usr/bin/oned",

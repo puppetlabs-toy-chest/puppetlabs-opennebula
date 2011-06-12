@@ -1,8 +1,9 @@
-# OpenNebula parameter class. Not to be used directly.
+# OpenNebula parameter class. This provides variables to the opennebula module.
+# Not to be used directly.
 #
-# == OS Support
+# === OS Support
 #
-# * Debian 7.0 (wheezy)
+# * Debian
 # * Ubuntu
 #
 # == Variables
@@ -21,8 +22,14 @@
 #   The user the oned daemon runs as.
 # [controller_group]
 #   The group the oned daemon runs as.
+# [sinatra_package]
+#   Package(s) for installing Ruby Sinatra.
 # [oneadmin_home]
 #   Location of oneadmin users home directory.
+# [econe_conf_path]
+#   Path to econe.conf.
+# [curl_package]
+#   Package(s) for curl.
 #
 # == Authors
 #
@@ -42,7 +49,10 @@ class opennebula::params {
       $controller_conf_path = "/etc/one/oned.conf"
       $controller_user = "oneadmin"
       $controller_group = "cloud"
+      $sinatra_package = "libsinatra-ruby"
       $oneadmin_home = "/var/lib/one/"
+      $econe_conf_path = "/etc/one/econe.conf"
+      $curl_package = ["curl", "libcurl4-openssl-dev"]
     }
     default: {
       fail("Operating system ${operatingsystem} is not supported")
