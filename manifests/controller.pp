@@ -10,7 +10,7 @@
 #   *Optional* Package(s) for installing the controller binaries.
 # [controller_service]
 #   *Optional* Service(s) for stopping and starting the controller process.
-# [controller_conf_path]
+# [oned_conf_path]
 #   *Optional* Path to oned.conf.
 # [controller_user]
 #   *Optional* User the oned daemon runs as.
@@ -19,7 +19,7 @@
 # [oneadmin_home]
 #   *Optional* Home directory of oneadmin user.
 # [oned_config]
-#   *Optional* A hash for configuring oned.conf.
+#   *Optional* A hash for configuring oned.conf. This gets passed to the class opennebula::oned_conf.
 #
 # == Variables
 #
@@ -46,7 +46,7 @@ class opennebula::controller (
   $oneadmin_password,
   $controller_package = $opennebula::params::controller_package,
   $controller_service = $opennebula::params::controller_service,
-  $controller_conf_path = $opennebula::params::controller_conf_path,
+  $oned_conf_path = $opennebula::params::oned_conf_path,
   $controller_user = $opennebula::params::controller_user,
   $controller_group = $opennebula::params::controller_group,
   $oneadmin_home = $opennebula::params::oneadmin_home,
@@ -93,17 +93,14 @@ class opennebula::controller (
     require => Package[$controller_package],
   }
   
-  #################
-  # Configuration #
-  #################
-  file { $controller_conf_path:
-    content => template("${module_name}/oned.conf"),
-    owner => "root",
-    group => "root",
-    mode => "0644",
-    require => Package[$controller_package],
+  ###############
+  # Oned Config #
+  ###############
+  $config_hash = { 
+    "opennebula::oned_conf" => $oned_config,   
   }
-
+  create_resources("class", $config_hash)
+  
   ################
   # Oned Service #
   ################
@@ -114,7 +111,7 @@ class opennebula::controller (
     enable => true,
     ensure => running,
     require => Package[$controller_package],
-    subscribe => File[$controller_conf_path],
+    subscribe => Class["opennebula::oned_conf"],
   }
 
 }

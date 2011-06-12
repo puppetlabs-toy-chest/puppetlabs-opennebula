@@ -16,7 +16,7 @@
 #   Package(s) for installing the controller binaries.
 # [controller_service]
 #   Service(s) for stopping and starting the controller process.
-# [controller_conf_path]
+# [oned_conf_path]
 #   Path to oned.conf
 # [controller_user]
 #   The user the oned daemon runs as.
@@ -46,7 +46,7 @@ class opennebula::params {
       $node_package = "opennebula-node"
       $controller_package = "opennebula"
       $controller_service = "opennebula"
-      $controller_conf_path = "/etc/one/oned.conf"
+      $oned_conf_path = "/etc/one/oned.conf"
       $controller_user = "oneadmin"
       $controller_group = "cloud"
       $sinatra_package = "libsinatra-ruby"
