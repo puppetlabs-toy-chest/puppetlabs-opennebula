@@ -59,6 +59,7 @@ class opennebula::controller (
 
   # Work out other information
   $oneadmin_authfile = "${oneadmin_home}/.one/one_auth"
+  $oneadmin_authfile_root = "/root/.one/one_auth"
   $oneadmin_sshkey = "${oneadmin_home}/.ssh/id_rsa"
   $oneadmin_ssh_config = "${oneadmin_home}/.ssh/config"
 
@@ -77,7 +78,17 @@ class opennebula::controller (
     mode => "0640",
     require => Package[$controller_package],
   }
-  
+  file { "/root/.one":
+    ensure => directory,
+  }
+  file { $oneadmin_authfile_root:
+    content => "oneadmin:${oneadmin_password}\n",
+    owner => "root",
+    group => "root",
+    mode => "0640",
+    require => Package[$controller_package],
+  }
+ 
   ########################
   # Setup SSH trust keys #
   ########################
@@ -120,5 +131,13 @@ class opennebula::controller (
   ############
   # clusters #
   ############
-  onecluster { $clusters: }
+  resources { "onecluster":
+    purge => true,
+  }
+  onecluster { "default":
+    ensure => present,
+  }
+  onecluster { $clusters: 
+    ensure => present,
+  }
 }
