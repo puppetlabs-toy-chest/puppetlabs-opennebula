@@ -20,6 +20,8 @@
 #   *Optional* Home directory of oneadmin user.
 # [oned_config]
 #   *Optional* A hash for configuring oned.conf. This gets passed to the class opennebula::oned_conf.
+# [clusters]
+#   *Optional* A list of clusters to create.
 #
 # == Variables
 #
@@ -50,7 +52,8 @@ class opennebula::controller (
   $controller_user = $opennebula::params::controller_user,
   $controller_group = $opennebula::params::controller_group,
   $oneadmin_home = $opennebula::params::oneadmin_home,
-  $oned_config = undef
+  $oned_config = undef,
+  $clusters = undef
 
   ) inherits opennebula::params {
 
@@ -114,4 +117,8 @@ class opennebula::controller (
     subscribe => Class["opennebula::oned_conf"],
   }
 
+  ############
+  # clusters #
+  ############
+  onecluster { $clusters: }
 }
