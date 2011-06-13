@@ -21,9 +21,11 @@
 # [oned_config]
 #   *Optional* A hash for configuring oned.conf. This gets passed to the class opennebula::oned_conf.
 # [clusters]
-#   *Optional* A list of clusters to create.
+#   *Optional* A list of clusters to create. This list gets passed to the resource onecluster.
 # [hosts]
-#   *Optional* A hash for configuration hosts. This gets passed to the onehost resource.
+#   *Optional* A list of onehost hashes to manage via OpenNebula. This gets passed to the resource onehost.
+# [networks]
+#   *Optional* A list of onevnet hashes to manage via OpenNebula. This gets passed to the reource onevnet.
 #
 # == Variables
 #
@@ -35,6 +37,30 @@
 #
 #   class { 'opennebula::controller':
 #     oneadmin_password => "gavilona",
+#   }
+#
+# Create clusters and hosts at class time:
+#
+#   class { 'opennebula::controller':
+#     oneadmin_password => "gavilona",
+#     hosts => {
+#       "node1" => {
+#         "tm_mad" => "tm_ssh",
+#         "im_mad" => "im_kvm",
+#         "vm_mad" => "vmm_kvm",
+#       }
+#     },
+#     clusters => [
+#       "ibm_blades",
+#     ],
+#     networks => {
+#       "internal" => {
+#         bridge => "virbr0",
+#         type => "fixed",
+#         public => true,
+#         leases => ["192.168.128.2","192.168.128.3"],
+#       }
+#     }
 #   }
 #
 # == Authors
@@ -137,6 +163,7 @@ class opennebula::controller (
   resources { "onecluster":
     purge => true,
   }
+  # default cluster should always exist
   onecluster { "default":
     ensure => present,
   }
@@ -151,4 +178,12 @@ class opennebula::controller (
     purge => true,
   }
   create_resources("onehost", $hosts)
+  
+  ############
+  # Networks #
+  ############
+  resources { "onevnet":
+    purge => true,
+  }
+  create_resources("onevnet", $networks)
 }
