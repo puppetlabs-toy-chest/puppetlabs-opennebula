@@ -82,7 +82,8 @@ class opennebula::controller (
   $oneadmin_home = $opennebula::params::oneadmin_home,
   $oned_config = undef,
   $clusters = undef,
-  $hosts = undef
+  $hosts = undef,
+  $networks = undef
 
   ) inherits opennebula::params {
 

@@ -2,7 +2,17 @@ Puppet::Type.newtype(:onevnet) do
   @doc = "Type for managing networks in OpenNebula using the onevnet" +
          "wrapper command."
 
-  ensurable
+  ensurable do
+    newvalue(:present) do
+      provider.create
+    end
+
+    newvalue(:absent) do
+      provider.destroy
+    end
+
+    defaultto :present
+  end
   
   newparam(:name) do
     desc "Name of network."

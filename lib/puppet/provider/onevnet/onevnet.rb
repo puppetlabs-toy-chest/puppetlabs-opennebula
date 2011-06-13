@@ -18,14 +18,16 @@ BRIDGE = <%= resource[:bridge] %>
 <% if resource[:type].upcase == "FIXED" %>
   <% resource[:leases].each { |lease| %>
 LEASES = [IP=<%= lease%>]
-  <% end %>
-<% elsif reource[:type].upcase == "RANGED" %>
+  <% } %>
+<% elsif resource[:type].upcase == "RANGED" %>
 NETWORK_SIZE = <%= resource[:network_size] %>
 NETWORK_ADDRESS = <%= resource[:network_address] %>
 <% end %>
 EOF
 
-    file.write(template)
+    tempfile = template.result(binding)
+    file.write(tempfile)
+    file.close
     onevnet "create", file.path
   end
   
@@ -35,7 +37,7 @@ EOF
   end
 
   # Return a list of existing networks using the onevnet -x list command
-  def onevnet_list
+  def self.onevnet_list
     xml = REXML::Document.new(`onevnet -x list`)
     onevnets = []
     xml.elements.each("VNET_POOL/VNET/NAME") do |element| 
@@ -46,7 +48,7 @@ EOF
     
   # Check if a network exists by scanning the onevnet list
   def exists?
-    onevnet_list().include?(resource[:name])
+    self.class.onevnet_list().include?(resource[:name])
   end
 
   # Return the full hash of all existing onevnet resources
@@ -57,10 +59,10 @@ EOF
         
       # Obvious resource attributes  
       hash[:provider] = self.name.to_s 
-      hash[:vnet] = host
+      hash[:name] = vnet
       
       # Open onevnet xml output using REXML
-      xml = REXML::Document.new(`onevnet -x show #{resource[:name]}`)
+      xml = REXML::Document.new(`onevnet -x show #{vnet}`)
         
       # Traverse the XML document and populate the common attributes
       xml.elements.each("VNET/TYPE") { |element| 
