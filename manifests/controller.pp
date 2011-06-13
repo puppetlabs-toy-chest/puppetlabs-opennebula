@@ -23,7 +23,7 @@
 # [clusters]
 #   *Optional* A list of clusters to create.
 # [hosts]
-#   *Optional* A list of hosts to manage via OpenNebula.
+#   *Optional* A hash for configuration hosts. This gets passed to the onehost resource.
 #
 # == Variables
 #
@@ -150,10 +150,5 @@ class opennebula::controller (
   resources { "onehost":
     purge => true,
   }
-  onehost { $hosts:
-    ensure => present,
-    im_mad => "im_kvm",
-    tm_mad => "tm_ssh",
-    vm_mad => "vm_mad",
-  }
+  create_resources("onehost", $hosts)
 }

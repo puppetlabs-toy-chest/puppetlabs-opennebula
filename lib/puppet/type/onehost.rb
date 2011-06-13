@@ -2,7 +2,17 @@ Puppet::Type.newtype(:onehost) do
   @doc = "Type for managing host in OpenNebula using the onehost" +
          "wrapper command."
 
-  ensurable
+  ensurable do
+    newvalue(:present) do
+      provider.create
+    end
+
+    newvalue(:absent) do
+      provider.destroy
+    end
+
+    defaultto :present
+  end
   
   newparam(:name) do
     desc "Name of host."
@@ -10,7 +20,6 @@ Puppet::Type.newtype(:onehost) do
     isnamevar
   end
   
-  #<im_mad> <vmm_mad> <tm_mad>
   newparam(:im_mad) do
     desc "Information Driver"
   end
