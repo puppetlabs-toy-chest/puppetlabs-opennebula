@@ -1,6 +1,8 @@
-# Install an OpenNebula controller.
+# Install and configure an OpenNebula controller.
 #
-# This installs the controller components for OpenNebula - the oned server.
+# This installs the controller components for OpenNebula - the oned server. It
+# also configures components at creation time if required: clusters, networks,
+# hosts, vms, images and users.
 #
 # == Parameters
 #
@@ -25,7 +27,9 @@
 # [hosts]
 #   *Optional* A list of onehost hashes to manage via OpenNebula. This gets passed to the resource onehost.
 # [networks]
-#   *Optional* A list of onevnet hashes to manage via OpenNebula. This gets passed to the reource onevnet.
+#   *Optional* A list of onevnet hashes to manage via OpenNebula. This gets passed to the resource onevnet.
+# [vms]
+#   *Optional* A list of onevm hashes to manage via OpenNebula. This gets passed to the resource onevm.
 #
 # == Variables
 #
@@ -60,6 +64,18 @@
 #         public => true,
 #         leases => ["192.168.128.2","192.168.128.3"],
 #       }
+#     },
+#     vms => {
+#       "box1" => {
+#         memory => "256",
+#         cpu => 1,
+#         vcpu => 1,
+#         os_arch => "x86_64",
+#         disk => [
+#           { type => "disk", source => "/tmp/diskimage", size => 8000, target => "hda", },
+#           { type => "cdrom", source => "/tmp/installos", },
+#         ],
+#       }
 #     }
 #   }
 #
@@ -83,7 +99,8 @@ class opennebula::controller (
   $oned_config = undef,
   $clusters = undef,
   $hosts = undef,
-  $networks = undef
+  $networks = undef,
+  $vms = undef,
 
   ) inherits opennebula::params {
 
@@ -187,4 +204,9 @@ class opennebula::controller (
     purge => true,
   }
   create_resources("onevnet", $networks)
+  
+  #######
+  # VMs #
+  #######
+  create_resources("onevm", $vms)
 }
