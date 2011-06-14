@@ -139,3 +139,28 @@ Basic example:
       network_size => "C",
       network_address => "192.168.55.0",
     }
+    
+### onevm
+
+#### Examples
+
+Basic example:
+
+    onevm { "node1":
+      memory => "256",
+      cpu => 1,
+      vcpu => 1,
+      os_arch => "x86_64",
+    }
+    
+### oneimage
+
+#### Examples
+
+Basic example:
+
+    oneimage { "debian-wheezy-64":
+      description => "Debian Wheezy 64 bit image",
+      type => "os",
+      path => "/srv/images/debian-wheezy-64.img",
+    }

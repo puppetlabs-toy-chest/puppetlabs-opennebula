@@ -30,6 +30,8 @@
 #   *Optional* A list of onevnet hashes to manage via OpenNebula. This gets passed to the resource onevnet.
 # [vms]
 #   *Optional* A list of onevm hashes to manage via OpenNebula. This gets passed to the resource onevm.
+# [images]
+#   *Optional* A list of oneimage hash to manage via OpenNebula. This gets passed to the resource oneimage.
 #
 # == Variables
 #
@@ -77,6 +79,13 @@
 #         ],
 #       }
 #     }
+#     images => {
+#       "debian-wheezy-64" => {
+#         description => "Debian Wheezy 64 bit image",
+#         path => "/srv/images/debian-wheezy-64.img",
+#         type => "os",
+#       }
+#     }
 #   }
 #
 # == Authors
@@ -100,7 +109,8 @@ class opennebula::controller (
   $clusters = undef,
   $hosts = undef,
   $networks = undef,
-  $vms = undef
+  $vms = undef,
+  $images = undef
 
   ) inherits opennebula::params {
 
@@ -209,4 +219,9 @@ class opennebula::controller (
   # VMs #
   #######
   create_resources("onevm", $vms)
+  
+  ##########
+  # Images #
+  ##########
+  create_resources("oneimage", $images)
 }
