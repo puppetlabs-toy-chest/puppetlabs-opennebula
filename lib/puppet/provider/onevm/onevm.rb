@@ -10,47 +10,40 @@ Puppet::Type.type(:onevm).provide(:onevm) do
   # Create a VM with onevm by passing in a temporary template.
   def create
     file = Tempfile.new("onevm-#{resource[:name]}")
+
+    os_array = []
+    ["arch","kernel","initrd","root","kernel_cmd","bootloader","boot"].each { |k|
+      sym = "os_#{k}".to_sym
+      if resource[sym] then
+        os_array << "#{k.upcase} = #{resource[sym]}"
+      end
+    }
+
     template = ERB.new <<-EOF
 NAME = "<%= resource[:name] %>"
 MEMORY = <%= resource[:memory] %>
 CPU = <%= resource[:cpu] %>
 VCPU = <%= resource[:vcpu] %>
 
-OS = [ KERNEL     = <%= resource[:os_kernel] %>,
-       ARCH       = <%= resource[:os_arch] %>,
-       INITRD     = <%= resource[:os_initrd] %>,
-       ROOT       = <%= resource[:os_root] %>,
-       KERNEL_CMD = <%= resource[:os_kernel_cmd] %>,
-       BOOTLOADER = <%= resource[:os_bootloader] %>,
-       BOOT       = <%= resource[:os_boot] %>,
-]
+OS = [ <%= os_array.join(", \n") %> ]
 
-<% resource[:disks].each { |disk| %>
-  <% if disk[:image] %>
-DISK = [ IMAGE    = <%= disk[:image] %>,
-         TARGET   = <%= disk[:target] %>,
-         BUS      = <%= disk[:bus] %>,
-         DRIVER   = <%= disk[:driver] %>
-]    
-  <% else %>
-DISK = [ TYPE     = <%= disk[:type] %>,
-         SOURCE   = <%= disk[:source] %>,
-         SIZE     = <%= disk[:size] %>,
-         FORMAT   = <%= disk[:format] %>,
-         TARGET   = <%= disk[:target] %>,
-         CLONE    = <%= disk[:clone] == true ? "yes" : "no" %>,
-         SAVE     = <%= disk[:save] == true ? "yes" : "no" %>,
-         READONLY = <%= disk[:readonly] == true ? "yes" : "no" %>,
-         BUS      = <%= disk[:bus] %>,
-         DRIVER   = <%= disk[:driver] %>
-]
-  <% end %>
+<% 
+resource[:disks].each { |disk| 
+  disk_array = [] 
+  disk.each { |key,value|
+    disk_array << key.upcase + " = " + value 
+  } %>
+DISK = [ <%= disk_array.join(", \n") %> ]
+<%
+} 
+%>
 EOF
 
     tempfile = template.result(binding)
     debug("template is:\n#{tempfile}")
     file.write(tempfile)
     file.close
+    `cp #{file.path} /tmp/foo`
     onevm "create", file.path
   end
   
@@ -84,8 +77,8 @@ EOF
       hash[:provider] = self.name.to_s 
       hash[:name] = vm
       
-      # Open onevnet xml output using REXML
-      xml = REXML::Document.new(`onevm -x show #{vnet}`)
+      # Open onevm xml output using REXML
+      xml = REXML::Document.new(`onevm -x show #{vm}`)
         
       # Traverse the XML document and populate the common attributes
       xml.elements.each("VM/MEMORY") { |element| 
