@@ -38,6 +38,18 @@ instantiation time or configure elements later using individual resources.
 
 ### opennebula::controller
 
+This class is responsible for setting up the main 'controller' node where oned
+runs.
+
+This class can also be passed parameters to configure most aspects of 
+OpenNebula:
+
+* Networks
+* Clusters
+* Hosts
+* Images
+* Virtual Machines
+
 #### Examples
 
 Basic example:
@@ -84,6 +96,9 @@ Configuring a different storage backend:
 
 ### opennebula::node
 
+This class should be included on nodes that are designed to run virtual 
+machines for the OpenNebula cluster.
+
 #### Examples
 
 Basic example:
@@ -92,6 +107,9 @@ Basic example:
     }
 
 ### opennebula::econe
+
+This class is for configuring the OpenNebula econe service for emulation of 
+the Amazon AWS interface for EC2.
 
 #### Examples
 
@@ -102,6 +120,9 @@ Basic example:
     }
 
 ### opennebula::oned_conf
+
+Oned configuration class. Generally used by the opennebula::controller class
+only.
 
 ## Resources
 
@@ -151,6 +172,13 @@ Basic example:
       cpu => 1,
       vcpu => 1,
       os_arch => "x86_64",
+      disks => [
+        { image => "debian-wheezy-amd64", 
+          driver => "qcow2", 
+          target => "vda" }
+      ],
+      graphics_type => "vnc",
+      graphics_listen => "0.0.0.0",
     }
     
 ### oneimage

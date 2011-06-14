@@ -36,14 +36,31 @@ resource[:disks].each { |disk|
 DISK = [ <%= disk_array.join(", \n") %> ]
 <%
 } 
+
+resource[:nics].each { |nic|
+  nic_array = []
+  nic.each { |key,value|
+    nic_array << key.upcase + " = " + value
+  } %>
+NIC = [ <%= nic_array.join(", \n") %> ]
+<%
+}
+
+graph_array = []
+["type","listen","port","passwd","keymap"].each { |param|
+  res = ("graphics_"+param).to_sym
+  if resource[res] then
+    graph_array << param.upcase + " = " + resource[res]
+  end
+}
 %>
+GRAPHICS = [ <%= graph_array.join(", \n") %> ]
 EOF
 
     tempfile = template.result(binding)
     debug("template is:\n#{tempfile}")
     file.write(tempfile)
     file.close
-    `cp #{file.path} /tmp/foo`
     onevm "create", file.path
   end
   

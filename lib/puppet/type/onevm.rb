@@ -64,4 +64,32 @@ Puppet::Type.newtype(:onevm) do
   newparam(:disks) do
     desc "Array of disk definitions."
   end
+  
+  newparam(:nics) do
+    desc "Array of nic definitions."
+  end
+  
+  newparam(:graphics_type) do
+    desc "Graphics type - vnc or sdl"
+    
+    defaultto "vnc"
+  end
+  
+  newparam(:graphics_listen) do
+    desc "IP to listen on."
+    
+    defaultto "127.0.0.1"
+  end
+  
+  newparam(:graphics_port) do
+    desc "Port for the VNC server. If left empty this is automatically set."
+  end
+  
+  newparam(:graphics_passwd) do
+    desc "VNC password."
+  end
+  
+  newparam(:graphics_keymap) do
+    desc "keyboard configuration locale to use in the VNC display"
+  end
 end

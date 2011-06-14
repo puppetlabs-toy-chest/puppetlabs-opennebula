@@ -77,6 +77,8 @@
 #           { type => "disk", source => "/tmp/diskimage", size => 8000, target => "hda", },
 #           { type => "cdrom", source => "/tmp/installos", },
 #         ],
+#         graphics_type => "vnc",
+#         graphics_listen => "0.0.0.0",
 #       }
 #     }
 #     images => {
