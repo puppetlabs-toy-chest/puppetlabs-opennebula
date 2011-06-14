@@ -10,6 +10,8 @@ Puppet::Type.type(:oneimage).provide(:oneimage) do
   # Create a network with onevnet by passing in a temporary template.
   def create
     file = Tempfile.new("oneimage-#{resource[:name]}")
+    File.chmod(0644, file.path)
+
     template = ERB.new <<-EOF
 NAME = "<%= resource[:name] %>"
 <% if resource[:description] %>DESCRIPTION = "<%= resource[:description] %>"<% end%>
@@ -27,7 +29,8 @@ EOF
     tempfile = template.result(binding)
     file.write(tempfile)
     file.close
-    oneimage "register", file.path
+    #oneimage "register", file.path
+    debug(`su oneadmin -c 'oneimage register #{file.path}'`)
   end
   
   # Destroy a network using onevnet delete
