@@ -55,6 +55,13 @@ graph_array = []
 }
 %>
 GRAPHICS = [ <%= graph_array.join(", \n") %> ]
+
+CONTEXT = [
+  HOSTNAME = "$NAME",
+  IP = "$NIC[IP]",
+  FILES = "/tmp/foo",
+  TARGET = "vdz"
+]
 EOF
 
     tempfile = template.result(binding)
