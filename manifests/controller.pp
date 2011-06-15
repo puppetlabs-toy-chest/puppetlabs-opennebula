@@ -226,4 +226,17 @@ class opennebula::controller (
   # Images #
   ##########
   create_resources("oneimage", $images)
+
+  #############################
+  # Contextualization scripts #
+  #############################
+  file { "/var/lib/one/context":
+    ensure => directory,
+  }
+  file { "/var/lib/one/context/init.sh":
+    owner => "root",
+    group => "root",
+    mode => "0755",
+    content => template("${module_name}/context/init.sh"),
+  }
 }

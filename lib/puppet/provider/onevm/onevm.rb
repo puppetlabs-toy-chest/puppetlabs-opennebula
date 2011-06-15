@@ -59,8 +59,8 @@ GRAPHICS = [ <%= graph_array.join(", \n") %> ]
 CONTEXT = [
   HOSTNAME = "$NAME",
   IP = "$NIC[IP]",
-  FILES = "/tmp/foo",
-  TARGET = "vdz"
+  FILES = "/var/lib/one/context/init.sh",
+  TARGET = "vdb"
 ]
 EOF
 
