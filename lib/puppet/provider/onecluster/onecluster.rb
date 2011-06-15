@@ -1,3 +1,5 @@
+require 'rexml/document'
+
 Puppet::Type.type(:onecluster).provide(:onecluster) do
   desc "onecluster provider"
   
@@ -12,20 +14,28 @@ Puppet::Type.type(:onecluster).provide(:onecluster) do
   end
   
   def exists?
-    system("onecluster list | grep ' #{resource[:name]}$' > /dev/null")
+    self.class.onecluster_list().include?(resource[:name])
+  end
+
+  def self.onecluster_list
+    xml = REXML::Document.new(`onecluster -x list`)
+    list = []
+    xml.elements.each("CLUSTER_POOL/CLUSTER/NAME") do |cluster|
+      list << cluster.text
+    end
+    list
   end
 
   def self.instances
-    rules = []
+    instances = []
 
-    clusters = `onecluster list | grep -v ID | awk  '{print $2}'`
-    clusters.split("\n").each do |cluster|
+    onecluster_list().each do |cluster|
       hash = {}
-      hash[:provider] = self.name.to_s 
+      hash[:provider] = self.class.name.to_s
       hash[:name] = cluster
-      rules << new(hash)
+      instances << new(hash)
     end
 
-    rules
+    instances
   end
 end

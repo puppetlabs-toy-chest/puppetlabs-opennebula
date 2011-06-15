@@ -7,8 +7,10 @@ describe Puppet::Type.type(:onecluster) do
     })
   end
 
-  it 'should accept a name' do
-    @resource[:name] = '000-test-foo'
-    @resource[:name].should == '000-test-foo'
+  describe ':name' do
+    it 'should accept a name' do
+      @resource[:name] = '000-test-foo'
+      @resource[:name].should == '000-test-foo'
+    end
   end
 end
