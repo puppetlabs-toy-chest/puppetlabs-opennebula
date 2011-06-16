@@ -141,4 +141,4 @@ sleep 30
 # Crank out an initial puppet run
 apt-get update
 apt-get -t experimental -y install puppet
-puppet agent -t --server puppet --environment onedemo
+puppet agent -t --server puppet --environment onedemo --pluginsync
