@@ -54,6 +54,7 @@ get_mac() {
 gen_hosts() {
     echo "127.0.0.1 localhost"
     echo "${IP} ${HOSTNAME}"
+    echo "${GATEWAY} puppet"
     echo ""
     echo "# IPv6 Specific stuff"
     echo "::1 ip6-localhost ip6-loopback"
@@ -79,7 +80,7 @@ iface $DEV inet static
 EOT
  
     if [ $DEV == "eth0" ]; then
-      echo "  gateway $NETWORK.1"
+      echo "  gateway $GATEWAY"
     fi
  
 echo ""
@@ -121,11 +122,23 @@ echo $HOSTNAME > /etc/hostname
  
 /bin/hostname `cat /etc/hostname`
 
-# Restart networking last
-service networking restart
-
-# Default gateway
-route add default gw $GATEWAY
-
 # DNS
 echo "nameserver $DNS" > /etc/resolv.conf
+
+# Restart networking last
+route delete default
+ifup -a --force --exclude=lo
+
+# Default gateway
+#route add default gw $GATEWAY
+
+sleep 30
+
+#ping -c 10 www.bob.sh
+
+#sleep 30
+
+# Crank out an initial puppet run
+apt-get update
+apt-get -t experimental -y install puppet
+puppet agent -t --server puppet --environment onedemo

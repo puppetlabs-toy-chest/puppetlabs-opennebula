@@ -56,11 +56,16 @@ graph_array = []
 %>
 GRAPHICS = [ <%= graph_array.join(", \n") %> ]
 
-<% context_array = []
-resource[:context].each { |key,value|
-  context_array << key.upcase + ' = "' + value + '"'
-} %>
+<% 
+if resource[:context] then
+  context_array = []
+  resource[:context].each { |key,value|
+    context_array << key.upcase + ' = "' + value + '"'
+  } %>
 CONTEXT = [ <%= context_array.join(", \n") %> ]
+<%
+end
+%>
 EOF
 
     tempfile = template.result(binding)
