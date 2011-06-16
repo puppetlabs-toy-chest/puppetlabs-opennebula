@@ -92,4 +92,8 @@ Puppet::Type.newtype(:onevm) do
   newparam(:graphics_keymap) do
     desc "keyboard configuration locale to use in the VNC display"
   end
+
+  newparam(:context) do
+    desc "Pass context hash to vm."
+  end
 end

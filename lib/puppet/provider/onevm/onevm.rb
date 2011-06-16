@@ -56,14 +56,11 @@ graph_array = []
 %>
 GRAPHICS = [ <%= graph_array.join(", \n") %> ]
 
-CONTEXT = [
-  HOSTNAME = "$NAME",
-  GATEWAY = "$NETWORK[GATEWAY]",
-  DNS = "$NETWORK[DNS]",
-  IP = "$NIC[IP]",
-  FILES = "/var/lib/one/context/init.sh",
-  TARGET = "vdb"
-]
+<% context_array = []
+resource[:context].each { |key,value|
+  context_array << key.upcase + ' = "' + value + '"'
+} %>
+CONTEXT = [ <%= context_array.join(", \n") %> ]
 EOF
 
     tempfile = template.result(binding)
