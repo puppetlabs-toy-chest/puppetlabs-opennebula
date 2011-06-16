@@ -161,6 +161,20 @@ Basic example:
       network_address => "192.168.55.0",
     }
     
+Context information as well:
+
+    onevnet { "net1":
+      type => "ranged",
+      bridge => "virbr4",
+      public => false,
+      network_size => "C",
+      network_address => "192.168.55.0",
+      context => {
+        'gateway' => "192.168.55.254",
+      }
+    }
+
+    
 ### onevm
 
 #### Examples

@@ -23,6 +23,11 @@ LEASES = [IP=<%= lease%>]
 NETWORK_SIZE = <%= resource[:network_size] %>
 NETWORK_ADDRESS = <%= resource[:network_address] %>
 <% end %>
+
+# Context information
+<% resource[:context].each { |key,value| %>
+<%= key.upcase %> = <%= value %>
+<% } %>
 EOF
 
     tempfile = template.result(binding)

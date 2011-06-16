@@ -47,4 +47,8 @@ Puppet::Type.newtype(:onevnet) do
   newparam(:network_address) do
     desc "Base network for ranged networking."
   end
+  
+  newparam(:context) do
+    desc "A hash of context information to also store in the template."
+  end
 end
