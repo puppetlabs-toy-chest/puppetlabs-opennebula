@@ -9,29 +9,32 @@ Puppet::Type.type(:onevm).provide(:onevm) do
   
   # Create a VM with onevm by passing in a temporary template.
   def create
-    file = Tempfile.new("onevm-#{resource[:name]}")
+    file = Tempfile.new("onevm-#{resource[:name].to_s}")
 
     os_array = []
     ["arch","kernel","initrd","root","kernel_cmd","bootloader","boot"].each { |k|
-      sym = "os_#{k}".to_sym
+      sym = "os_#{k.to_s}".to_sym
       if resource[sym] then
-        os_array << "#{k.upcase} = #{resource[sym]}"
+        os_array << "#{k.to_s.upcase} = #{resource[sym]}"
       end
     }
 
+    debug("Start building up template for create command")
     template = ERB.new <<-EOF
-NAME = "<%= resource[:name] %>"
-MEMORY = <%= resource[:memory] %>
-CPU = <%= resource[:cpu] %>
-VCPU = <%= resource[:vcpu] %>
+NAME = "<%= resource[:name].to_s %>"
+MEMORY = <%= resource[:memory].to_s %>
+CPU = <%= resource[:cpu].to_s %>
+VCPU = <%= resource[:vcpu].to_s %>
 
 OS = [ <%= os_array.join(", \n") %> ]
 
 <% 
 resource[:disks].each { |disk| 
   disk_array = [] 
+  next if !disk.is_a?(Hash)
+  next if disk.size < 1
   disk.each { |key,value|
-    disk_array << key.upcase + " = " + value 
+    disk_array << key.to_s.upcase + " = " + value.to_s
   } %>
 DISK = [ <%= disk_array.join(", \n") %> ]
 <%
@@ -39,8 +42,10 @@ DISK = [ <%= disk_array.join(", \n") %> ]
 
 resource[:nics].each { |nic|
   nic_array = []
+  next if !nic.is_a?(Hash)
+  next if nic.size < 1
   nic.each { |key,value|
-    nic_array << key.upcase + " = " + value
+    nic_array << key.to_s.upcase + " = " + value.to_s
   } %>
 NIC = [ <%= nic_array.join(", \n") %> ]
 <%
@@ -48,9 +53,9 @@ NIC = [ <%= nic_array.join(", \n") %> ]
 
 graph_array = []
 ["type","listen","port","passwd","keymap"].each { |param|
-  res = ("graphics_"+param).to_sym
+  res = ("graphics_"+param.to_s).to_sym
   if resource[res] then
-    graph_array << param.upcase + " = " + resource[res]
+    graph_array << param.to_s.upcase + " = " + resource[res]
   end
 }
 %>
@@ -60,7 +65,7 @@ GRAPHICS = [ <%= graph_array.join(", \n") %> ]
 if resource[:context] then
   context_array = []
   resource[:context].each { |key,value|
-    context_array << key.upcase + ' = "' + value + '"'
+    context_array << key.to_s.upcase + ' = "' + value.to_s + '"'
   } %>
 CONTEXT = [ <%= context_array.join(", \n") %> ]
 <%
@@ -68,6 +73,7 @@ end
 %>
 EOF
 
+    debug("Created template, lets try and parse it")
     tempfile = template.result(binding)
     debug("template is:\n#{tempfile}")
     file.write(tempfile)

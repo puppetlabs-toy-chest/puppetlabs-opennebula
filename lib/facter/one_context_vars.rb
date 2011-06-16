@@ -1,3 +1,4 @@
+if FileTest.exists?(Facter.value(:one_context_path)) then
 File.open(Facter.value(:one_context_path)).each { |line|
   next if line =~ /^#/
 
@@ -8,3 +9,4 @@ File.open(Facter.value(:one_context_path)).each { |line|
     end
   end
 }
+end
