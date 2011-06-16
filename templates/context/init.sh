@@ -129,16 +129,10 @@ echo "nameserver $DNS" > /etc/resolv.conf
 route delete default
 ifup -a --force --exclude=lo
 
-# Default gateway
-#route add default gw $GATEWAY
-
-sleep 30
-
-#ping -c 10 www.bob.sh
-
-#sleep 30
+sleep 10
 
 # Crank out an initial puppet run
+echo "deb http://ftp.debian.org/debian experimental main" >> /etc/apt/sources.list
 apt-get update
 apt-get -t experimental -y install puppet
 puppet agent -t --server puppet --environment onedemo --pluginsync
