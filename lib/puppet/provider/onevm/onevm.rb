@@ -58,6 +58,8 @@ GRAPHICS = [ <%= graph_array.join(", \n") %> ]
 
 CONTEXT = [
   HOSTNAME = "$NAME",
+  GATEWAY = "$NETWORK[GATEWAY]",
+  DNS = "$NETWORK[DNS]",
   IP = "$NIC[IP]",
   FILES = "/var/lib/one/context/init.sh",
   TARGET = "vdb"

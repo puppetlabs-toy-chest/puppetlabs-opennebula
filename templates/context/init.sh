@@ -123,3 +123,9 @@ echo $HOSTNAME > /etc/hostname
 
 # Restart networking last
 service networking restart
+
+# Default gateway
+route add default gw $GATEWAY
+
+# DNS
+echo "nameserver $DNS" > /etc/resolv.conf
