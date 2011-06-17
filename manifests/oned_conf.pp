@@ -4,6 +4,8 @@
 #
 # == Parameters
 #
+# A lot of these parameters are documented on the Opennebula website in more detail.
+#
 # [manager_time]
 #   *Optional* 
 # [host_monitoring_interval]

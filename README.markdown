@@ -94,6 +94,31 @@ Configuring a different storage backend:
       },
     }
 
+Adding hooks for dynamic DNS can be done using the oned_config->hooks parameter area. 
+
+This allows you to have Opennebula automatically update DNS when nodes are created
+and remove DNS entries when nodes are destroyed:
+
+    class { "opennebula::controller":
+      oneadmin_password => "something",
+      oned_config => {
+        hooks => {
+          'dnsupdate' => {
+            on => "running",
+            command => "/usr/share/one/hooks/puppet/dnsupdate.rb",
+            arguments => 'vms.cloud.mydomain.com 1.1.1.1 $NAME $NIC[IP]',
+            remote => "no",
+          },
+          'dnsdelete' => {
+            on => "done",
+            command => "/usr/share/one/hooks/puppet/dnsdelete.rb",
+            arguments => 'vms.cloud.mydomain.com 1.1.1.1 $NAME',
+            remote => "no",
+          },
+        },
+      },
+    }
+
 ### opennebula::node
 
 This class should be included on nodes that are designed to run virtual 
