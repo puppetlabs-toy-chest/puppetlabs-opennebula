@@ -239,4 +239,18 @@ class opennebula::controller (
     mode => "0755",
     content => template("${module_name}/context/init.sh"),
   }
+
+  ################
+  # Hook Scripts #
+  ################
+  file { "/usr/share/one/hooks/puppet":
+    ensure => directory,
+    mode => "0755",
+    owner => "root",
+    group => "root",
+    source => "puppet:///modules/${module_name}/hookscripts/",
+    recurse => true,
+    purge => true,
+    require => Package[$controller_package],
+  }
 }

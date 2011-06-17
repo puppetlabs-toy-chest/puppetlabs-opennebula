@@ -42,6 +42,8 @@
 #   *Optional* 
 # [oned_conf_path]
 #   *Optional* 
+# [hooks]
+#   *Optional*
 #
 # == Variables
 #
@@ -68,7 +70,7 @@ class opennebula::oned_conf (
   $manager_timer = 15,
   $host_monitoring_interval = 600,
   $vm_polling_interval = 600,
-  $vm_dir = "/var/lib/one/",
+  $vm_dir = "/var/lib/one",
   $scripts_remote_dir = "/var/tmp/one",
   $port = 2633,
   $db_backend = "sqlite",
@@ -84,6 +86,7 @@ class opennebula::oned_conf (
   $image_repository_path = "/var/lib/one/images/",
   $default_image_type = "OS",
   $default_device_prefix = "hd",
+  $hooks = undef,
   $oned_conf_path = $opennebula::params::oned_conf_path
   
   ) inherits opennebula::params {
