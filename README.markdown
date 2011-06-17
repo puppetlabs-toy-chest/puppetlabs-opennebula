@@ -2,6 +2,38 @@
 
 This module manages OpenNebula from within Puppet.
 
+### Overview
+
+This is the OpenNebula module. Here we are providing capability within Puppet to install and configure your OpenNebula clusters.
+
+### Disclaimer
+
+Warning! While this software is written in the best interest of quality it has not been formally tested by our QA teams. Use at your own risk, but feel free to enjoy and perhaps improve it while you do.
+
+Please see the included Apache Software License for more legal details regarding warranty.
+
+### Requirements
+
+So this module was predominantly tested on with:
+
+* Puppet 2.7.0rc4
+* Debian Wheezy
+* OpenNebula 2.0.1
+
+Other combinations may work, and we are happy to obviously take patches to support other stacks.
+
+# Installation
+
+As with most modules, its best to download this module from the forge:
+
+http://forge.puppetlabs.com/
+
+If you want the bleeding edge (and potentially broken) version from github, download the module into your modulepath on your Puppetmaster. If you are not sure where your module path is try this command:
+
+  puppet --configprint modulepath
+
+Depending on the version of Puppet, you may need to restart the puppetmasterd (or Apache) process before the functions will work.
+
 # Quick Start
 
 Setup the controller.
