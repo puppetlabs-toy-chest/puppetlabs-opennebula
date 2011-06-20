@@ -34,9 +34,6 @@ class opennebula::node (
   
   ) inherits opennebula::params {
 
-  $oneadmin_sshkey_pub = "${oneadmin_home}/.ssh/id_rsa.pub"
-  $oneadmin_authorized_keys = "${oneadmin_home}/.ssh/authorized_keys"
-
   # Install node package
   package { $node_package:
     ensure => installed,
