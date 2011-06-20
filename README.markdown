@@ -37,10 +37,28 @@ If you want the bleeding edge (and potentially broken) version from github,
 download the module into your modulepath on your Puppetmaster. If you are not 
 sure where your module path is try this command:
 
-  puppet --configprint modulepath
+    puppet --configprint modulepath
 
 Depending on the version of Puppet, you may need to restart the puppetmasterd 
 (or Apache) process before the functions will work.
+
+This module uses both Ruby based providers, functions and it also relies on
+exported resources. Configuration must include the following items:
+
+    [master]
+    storeconfigs = true
+    thin_storeconfigs = true
+    dbadapter = mysql
+    dbuser = puppet
+    dbpassword = password
+    dbserver = localhost
+
+And for the agent:
+
+    [agent]
+    pluginsync = true
+    
+The module will not operate normally without these features.
 
 # Quick Start
 
@@ -56,6 +74,7 @@ Setup a node.
 
     node "kvm1" {
       class { "opennebula::node": 
+        controller => "oneserver",
       }
     }
 
@@ -164,11 +183,14 @@ and remove DNS entries when nodes are destroyed:
 This class should be included on nodes that are designed to run virtual 
 machines for the OpenNebula cluster.
 
+You have to specify a controller for the node to peer with.
+
 #### Examples
 
 Basic example:
 
     class { "opennebula::node":
+      controller => "one1.mydomain.com",
     }
 
 ### opennebula::econe

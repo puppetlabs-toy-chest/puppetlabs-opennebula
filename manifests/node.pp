@@ -15,7 +15,10 @@
 #
 # == Examples
 #
+# Basic example:
+#
 #   class { 'opennebula::node':
+#     controller => 'one1.mydomain.com',
 #   }
 #
 # == Authors
