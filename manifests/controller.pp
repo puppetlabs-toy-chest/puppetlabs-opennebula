@@ -166,13 +166,16 @@ class opennebula::controller (
   ########################
   # Setup SSH trust keys #
   ########################
-  file { $oneadmin_sshkey:
-    content => template("${module_name}/controller_id_rsa"),
-    owner => $controller_user,
-    group => $controller_group,
-    mode => "0600",
-    require => Package[$controller_package],
+  
+  # Export key to all nodes
+  @@ssh_authorized_key { "oneadmin_controller_${fqdn}":
+    ensure => present,
+    key => $::oneadmin_pubkey_rsa,
+    name => "oneadmin_controller_${fqdn}",
+    user => $controller_user,
+    type => "ssh-rsa",
   }
+  
   file { $oneadmin_ssh_config:
     content => template("${module_name}/ssh_config"),
     owner => $controller_user,

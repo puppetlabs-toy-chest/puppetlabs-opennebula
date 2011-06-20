@@ -2,6 +2,8 @@
 #
 # == Parameters
 #
+# [controller]
+#   *Mandatory* Hostname of controller.
 # [node_package]
 #   *Optional* Package(s) for installing the node.
 # [oneadmin_home]
@@ -25,29 +27,24 @@
 # Copyright 2011 Puppetlabs Inc, unless otherwise noted.
 #
 class opennebula::node (
-  $node_package = $node_package,
-  $oneadmin_home = $oneadmin_home
+  
+  $controller,
+  $node_package = $opennebula::params::node_package,
+  $oneadmin_home = $opennebula::params::oneadmin_home
+  
   ) inherits opennebula::params {
 
   $oneadmin_sshkey_pub = "${oneadmin_home}/.ssh/id_rsa.pub"
   $oneadmin_authorized_keys = "${oneadmin_home}/.ssh/authorized_keys"
 
+  # Install node package
   package { $node_package:
     ensure => installed,
   }
-  file { $oneadmin_sshkey_pub:
-    content => template("${module_name}/controller_id_rsa.pub"),
-    owner => "oneadmin",
-    group => "cloud",
-    mode => "0644",
+  
+  # Install ssh keys from controller
+  Ssh_authorized_key <<| title == "oneadmin_controller_${controller}" |>> {
     require => Package[$node_package],
   }
-  file { $oneadmin_authorized_keys:
-    content => template("${module_name}/controller_id_rsa.pub"),
-    owner => "oneadmin",
-    group => "cloud",
-    mode => "0644",
-    require => Package[$node_package],
-  }
-
+  
 }

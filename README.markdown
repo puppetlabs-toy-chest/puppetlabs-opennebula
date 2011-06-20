@@ -4,13 +4,17 @@ This module manages OpenNebula from within Puppet.
 
 ### Overview
 
-This is the OpenNebula module. Here we are providing capability within Puppet to install and configure your OpenNebula clusters.
+This is the OpenNebula module. Here we are providing capability within Puppet 
+to install and configure your OpenNebula clusters.
 
 ### Disclaimer
 
-Warning! While this software is written in the best interest of quality it has not been formally tested by our QA teams. Use at your own risk, but feel free to enjoy and perhaps improve it while you do.
+Warning! While this software is written in the best interest of quality it has 
+not been formally tested by our QA teams. Use at your own risk, but feel free 
+to enjoy and perhaps improve it while you do.
 
-Please see the included Apache Software License for more legal details regarding warranty.
+Please see the included Apache Software License for more legal details 
+regarding warranty.
 
 ### Requirements
 
@@ -20,7 +24,8 @@ So this module was predominantly tested on with:
 * Debian Wheezy
 * OpenNebula 2.0.1
 
-Other combinations may work, and we are happy to obviously take patches to support other stacks.
+Other combinations may work, and we are happy to obviously take patches to 
+support other stacks.
 
 # Installation
 
@@ -28,11 +33,14 @@ As with most modules, its best to download this module from the forge:
 
 http://forge.puppetlabs.com/
 
-If you want the bleeding edge (and potentially broken) version from github, download the module into your modulepath on your Puppetmaster. If you are not sure where your module path is try this command:
+If you want the bleeding edge (and potentially broken) version from github, 
+download the module into your modulepath on your Puppetmaster. If you are not 
+sure where your module path is try this command:
 
   puppet --configprint modulepath
 
-Depending on the version of Puppet, you may need to restart the puppetmasterd (or Apache) process before the functions will work.
+Depending on the version of Puppet, you may need to restart the puppetmasterd 
+(or Apache) process before the functions will work.
 
 # Quick Start
 
@@ -271,3 +279,22 @@ Basic example:
       type => "os",
       path => "/srv/images/debian-wheezy-64.img",
     }
+
+## Facts
+
+### one_context_path
+
+This fact returns the path to the context file on the machine. It is designed
+for use on virtual machines launched by OpenNebula.
+
+### one_context_var_*
+
+These facts are returned from the contents of your context.sh file (see fact
+above). It allows someone in Puppet to use variables passed to a VM using
+OpenNebula contexts.
+
+### oneadmin_pubkey_rsa
+
+This fact returns the contents of the oneadmin users public key. This can be
+used to create SSH trusts between OpenNebula nodes and controllers by exporting 
+a resource using this fact as the contents for creating authorized key entries.
