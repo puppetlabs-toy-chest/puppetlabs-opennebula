@@ -64,7 +64,7 @@ EOF
       hash[:name] = image
       
       # Open onevnet xml output using REXML
-      xml = REXML::Document.new(`oneimage -x show #{vnet}`)
+      xml = REXML::Document.new(`oneimage -x show #{image}`)
         
       # Traverse the XML document and populate the common attributes
       xml.elements.each("IMAGE/TEMPLATE/DESCRIPTION") { |element|

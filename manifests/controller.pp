@@ -119,26 +119,25 @@ class opennebula::controller (
   $oneadmin_home = $opennebula::params::oneadmin_home,
   $oned_config = undef,
   $clusters = undef,
-  $cluster_purge = true,
+  $cluster_purge = false,
   $hosts = undef,
-  $host_purge = true,
+  $host_purge = false,
   $networks = undef,
-  $network_purge = true,
+  $network_purge = false,
   $vms = undef,
-  $vm_purge = true,
+  $vm_purge = false,
   $images = undef,
-  $image_purge = true
+  $image_purge = false
 
   ) inherits opennebula::params {
 
   # Work out other information
   $oneadmin_authfile = "${oneadmin_home}/.one/one_auth"
   $oneadmin_authfile_root = "/root/.one/one_auth"
-  $oneadmin_sshkey = "${oneadmin_home}/.ssh/id_rsa"
   $oneadmin_ssh_config = "${oneadmin_home}/.ssh/config"
 
   Package[$controller_package] -> File[$oneadmin_authfile] -> 
-    File[$oneadmin_sshkey] -> Service[$controller_service]
+    Service[$controller_service]
 
   package { $controller_package:
     ensure => installed,
@@ -229,7 +228,7 @@ class opennebula::controller (
       purge => true,
     }
   }
-  if(defined($hosts)) {
+  if($hosts) {
     create_resources("onehost", $hosts)
   }
   
@@ -241,7 +240,7 @@ class opennebula::controller (
       purge => true,
     }
   }
-  if(defined($networks)) {
+  if($networks) {
     create_resources("onevnet", $networks)
   }
   
@@ -253,7 +252,7 @@ class opennebula::controller (
       purge => true,
     }
   }
-  if(defined($vms)) {
+  if($vms) {
     create_resources("onevm", $vms)
   }
   
@@ -265,7 +264,7 @@ class opennebula::controller (
       purge => true,
     }
   }
-  if(defined($images)) { 
+  if($images) { 
     create_resources("oneimage", $images)
   }
 
