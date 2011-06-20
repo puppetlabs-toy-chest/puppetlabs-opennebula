@@ -24,14 +24,24 @@
 #   *Optional* A hash for configuring oned.conf. This gets passed to the class opennebula::oned_conf.
 # [clusters]
 #   *Optional* A list of clusters to create. This list gets passed to the resource onecluster.
+# [cluster_purge]
+#   *Optional* Purge clusters that aren't explicitly defined by Puppet.
 # [hosts]
 #   *Optional* A list of onehost hashes to manage via OpenNebula. This gets passed to the resource onehost.
+# [host_purge]
+#   *Optional* Purge hosts that aren't explicitly defined by Puppet.
 # [networks]
 #   *Optional* A list of onevnet hashes to manage via OpenNebula. This gets passed to the resource onevnet.
+# [network_purge]
+#   *Optional* Purge networks that aren't explicitly defined by Puppet.
 # [vms]
 #   *Optional* A list of onevm hashes to manage via OpenNebula. This gets passed to the resource onevm.
+# [vm_purge]
+#   *Optional* Purge vms that aren't explicitly defined by Puppet.
 # [images]
 #   *Optional* A list of oneimage hash to manage via OpenNebula. This gets passed to the resource oneimage.
+# [image_purge]
+#   *Optional* Purge images that aren't explicitly defined by Puppet.
 #
 # == Variables
 #
@@ -109,10 +119,15 @@ class opennebula::controller (
   $oneadmin_home = $opennebula::params::oneadmin_home,
   $oned_config = undef,
   $clusters = undef,
+  $cluster_purge = true,
   $hosts = undef,
+  $host_purge = true,
   $networks = undef,
+  $network_purge = true,
   $vms = undef,
-  $images = undef
+  $vm_purge = true,
+  $images = undef,
+  $image_purge = true
 
   ) inherits opennebula::params {
 
@@ -190,8 +205,10 @@ class opennebula::controller (
   ############
   # clusters #
   ############
-  resources { "onecluster":
-    purge => true,
+  if($cluster_purge == true) {
+    resources { "onecluster":
+      purge => true,
+    }
   }
   # default cluster should always exist
   onecluster { "default":
@@ -204,28 +221,50 @@ class opennebula::controller (
   #########
   # Hosts #
   #########
-  resources { "onehost":
-    purge => true,
+  if($host_purge == true) {
+    resources { "onehost":
+      purge => true,
+    }
   }
-  create_resources("onehost", $hosts)
+  if(defined($hosts)) {
+    create_resources("onehost", $hosts)
+  }
   
   ############
   # Networks #
   ############
-  resources { "onevnet":
-    purge => true,
+  if($network_purge == true) {
+    resources { "onevnet":
+      purge => true,
+    }
   }
-  create_resources("onevnet", $networks)
+  if(defined($networks)) {
+    create_resources("onevnet", $networks)
+  }
   
   #######
   # VMs #
   #######
-  create_resources("onevm", $vms)
+  if($vm_purge == true) {
+    resources { "onevm":
+      purge => true,
+    }
+  }
+  if(defined($vms)) {
+    create_resources("onevm", $vms)
+  }
   
   ##########
   # Images #
   ##########
-  create_resources("oneimage", $images)
+  if($image_purge == true) {
+    resources { "oneimage":
+      purge => true,
+    }
+  }
+  if(defined($images)) { 
+    create_resources("oneimage", $images)
+  }
 
   #############################
   # Contextualization scripts #
