@@ -18,7 +18,7 @@ regarding warranty.
 
 ### Requirements
 
-So this module was predominantly tested on with:
+So this module was predominantly tested on:
 
 * Puppet 2.7.0rc4
 * Debian Wheezy
@@ -31,7 +31,7 @@ support other stacks.
 
 As with most modules, its best to download this module from the forge:
 
-http://forge.puppetlabs.com/
+http://forge.puppetlabs.com/puppetlabs/opennebula
 
 If you want the bleeding edge (and potentially broken) version from github, 
 download the module into your modulepath on your Puppetmaster. If you are not 
@@ -73,6 +73,12 @@ Setup the controller.
 Setup a node.
 
     node "kvm1" {
+      # You will need to configure libvirt and kvm (for example)
+      class { "kvm":
+      }
+      class { "libvirt":
+      }
+    
       class { "opennebula::node": 
         controller => "oneserver",
       }
