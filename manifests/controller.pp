@@ -273,6 +273,8 @@ class opennebula::controller (
   #############################
   file { "/var/lib/one/context":
     ensure => directory,
+    purge => true,
+    recurse => true,
   }
   file { "/var/lib/one/context/init.sh":
     owner => "root",

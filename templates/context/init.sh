@@ -132,7 +132,24 @@ ifup -a --force --exclude=lo
 sleep 10
 
 # Crank out an initial puppet run
-echo "deb http://ftp.debian.org/debian experimental main" >> /etc/apt/sources.list
+SRC='
+deb     http://mirror.cloud.bob.sh/debian/ wheezy  main non-free contrib
+deb     http://mirror.cloud.bob.sh/debian/ wheezy-proposed-updates  main non-free contrib
+deb     http://mirror.cloud.bob.sh/debian/ experimental main
+deb     http://mirror.cloud.bob.sh/puppet/ sid  main
+
+deb     http://security.debian.org/  wheezy/updates  main contrib non-free
+deb-src http://security.debian.org/  wheezy/updates  main contrib non-free
+'
+echo "$SRC" > /etc/apt/sources.list
+
 apt-get update
 apt-get -t experimental -y install puppet
+
 puppet agent -t --server puppet --environment onedemo --pluginsync
+puppet agent -t --server puppet --environment onedemo --pluginsync
+puppet agent -t --server puppet --environment onedemo --pluginsync
+puppet agent -t --server puppet --environment onedemo --pluginsync
+puppet agent -t --server puppet --environment onedemo --pluginsync
+
+exit 0
