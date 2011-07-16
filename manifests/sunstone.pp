@@ -55,7 +55,7 @@ class opennebula::sunstone (
     start => "/usr/bin/sunstone-server -H 0.0.0.0 -p 4568 start",
     stop => "/usr/bin/sunstone-server start",
     provider => "base",
-    require => Package[$sunstone_pacakge],
+    require => Package[$sunstone_package],
   }
 
 }
