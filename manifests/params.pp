@@ -53,6 +53,8 @@ class opennebula::params {
       $oneadmin_home = "/var/lib/one/"
       $econe_conf_path = "/etc/one/econe.conf"
       $curl_package = ["curl", "libcurl4-openssl-dev"]
+      $sunstone_package = "opennebula-sunstone"
+      $sunstone_conf_path = "/tmp/foo"
     }
     default: {
       fail("Operating system ${operatingsystem} is not supported")

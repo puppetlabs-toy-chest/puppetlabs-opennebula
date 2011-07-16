@@ -91,6 +91,14 @@ Setup an econe server:
         one_xmlrpc => "http://oneserver:2633/RPC2",
       }
     }
+
+Setup up the Sunstone web interface:
+
+    node "controller1":
+      class { "opennebula::sunstone": }
+    }
+
+This will be available on http://$fqdn:4568/.
     
 # Detailed Usage
 
@@ -216,6 +224,18 @@ Basic example:
 
 Oned configuration class. Generally used by the opennebula::controller class
 only.
+
+### opennebula::sunstone
+
+This class configures sunstone to run on port 4568:
+
+http://$fqdn:4568/
+
+#### Examples
+
+Sunstone takes no options:
+
+    class { "opennebula::sunstone": }
 
 ## Resources
 
