@@ -144,12 +144,12 @@ deb-src http://security.debian.org/  wheezy/updates  main contrib non-free
 echo "$SRC" > /etc/apt/sources.list
 
 apt-get update
-apt-get -t experimental -y install puppet
+apt-get -t experimental -y install puppet facter git
 
-puppet agent -t --server puppet --environment onedemo --pluginsync
-puppet agent -t --server puppet --environment onedemo --pluginsync
-puppet agent -t --server puppet --environment onedemo --pluginsync
-puppet agent -t --server puppet --environment onedemo --pluginsync
-puppet agent -t --server puppet --environment onedemo --pluginsync
+su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
+su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
+su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
+su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
+su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
 
 exit 0
