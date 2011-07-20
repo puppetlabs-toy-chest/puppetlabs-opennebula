@@ -135,6 +135,7 @@ sleep 10
 SRC='
 deb     http://mirror.cloud.bob.sh/debian/ wheezy  main non-free contrib
 deb     http://mirror.cloud.bob.sh/debian/ wheezy-proposed-updates  main non-free contrib
+deb     http://mirror.cloud.bob.sh/debian/ sid main
 deb     http://mirror.cloud.bob.sh/debian/ experimental main
 deb     http://mirror.cloud.bob.sh/puppet/ sid  main
 
