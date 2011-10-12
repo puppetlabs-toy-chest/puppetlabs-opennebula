@@ -147,10 +147,12 @@ echo "$SRC" > /etc/apt/sources.list
 apt-get update
 apt-get -t experimental -y install puppet facter git
 
-su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
-su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
-su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
-su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
-su -l -c 'puppet agent -t --environment onedemo --pluginsync' root
+if [ -z $PUPPET_ENVIRONMENT ]
+then PUPPET_ENVIRONMENT="production"
+fi
+
+su -l -c "puppet agent -t --environment $PUPPET_ENVIRONMENT --pluginsync" root
+su -l -c "puppet agent -t --environment $PUPPET_ENVIRONMENT --pluginsync" root
+su -l -c "puppet agent -t --environment $PUPPET_ENVIRONMENT --pluginsync" root
 
 exit 0
