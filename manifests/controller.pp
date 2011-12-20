@@ -186,10 +186,14 @@ class opennebula::controller (
   ###############
   # Oned Config #
   ###############
-  $config_hash = { 
-    "opennebula::oned_conf" => $oned_config,   
+  if ($oned_config) {
+    $config_hash = { 
+      "opennebula::oned_conf" => $oned_config,   
+    }
+    create_resources("class", $config_hash)
+  } else {
+    include opennebula::oned_conf
   }
-  create_resources("class", $config_hash)
   
   ################
   # Oned Service #
