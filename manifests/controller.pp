@@ -220,8 +220,11 @@ class opennebula::controller (
   onecluster { "default":
     ensure => present,
   }
-  onecluster { $clusters: 
-    ensure => present,
+  
+  if($clusters) {
+    onecluster { $clusters: 
+      ensure => present,
+    }
   }
   
   #########
