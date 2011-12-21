@@ -4,9 +4,9 @@ require 'erb'
 
 Puppet::Type.type(:onevm).provide(:onevm) do
   desc "onevm provider"
-  
+
   commands :onevm => "onevm"
-  
+
   # Create a VM with onevm by passing in a temporary template.
   def create
     file = Tempfile.new("onevm-#{resource[:name].to_s}")
@@ -80,7 +80,7 @@ EOF
     file.close
     onevm "create", file.path
   end
-  
+
   # Destroy a VM using onevm delete
   def destroy
     onevm "delete", resource[:name]
@@ -90,12 +90,12 @@ EOF
   def self.onevm_list
     xml = REXML::Document.new(`onevm -x list`)
     onevm = []
-    xml.elements.each("VM_POOL/VM/NAME") do |element| 
-      onevm << element.text 
+    xml.elements.each("VM_POOL/VM/NAME") do |element|
+      onevm << element.text
     end
     onevm
   end
-    
+
   # Check if a VM exists by scanning the onevm list
   def exists?
     self.class.onevm_list().include?(resource[:name])
@@ -106,25 +106,25 @@ EOF
     instances = []
     onevm_list.each do |vm|
       hash = {}
-        
-      # Obvious resource attributes  
-      hash[:provider] = self.name.to_s 
+
+      # Obvious resource attributes
+      hash[:provider] = self.name.to_s
       hash[:name] = vm
-      
+
       # Open onevm xml output using REXML
       xml = REXML::Document.new(`onevm -x show #{vm}`)
-        
+
       # Traverse the XML document and populate the common attributes
-      xml.elements.each("VM/MEMORY") { |element| 
+      xml.elements.each("VM/MEMORY") { |element|
         hash[:memory] = element.text
       }
-      xml.elements.each("VM/CPU") { |element| 
+      xml.elements.each("VM/CPU") { |element|
         hash[:cpu] = element.text
       }
-      xml.elements.each("VM/VCPU") { |element| 
+      xml.elements.each("VM/VCPU") { |element|
         hash[:vcpu] = element.text
       }
-                  
+
       instances << new(hash)
     end
 

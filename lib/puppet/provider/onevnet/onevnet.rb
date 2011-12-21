@@ -4,9 +4,9 @@ require 'erb'
 
 Puppet::Type.type(:onevnet).provide(:onevnet) do
   desc "onevnet provider"
-  
+
   commands :onevnet => "onevnet"
-  
+
   # Create a network with onevnet by passing in a temporary template.
   def create
     file = Tempfile.new("onevnet-#{resource[:name]}")
@@ -35,7 +35,7 @@ EOF
     file.close
     onevnet "create", file.path
   end
-  
+
   # Destroy a network using onevnet delete
   def destroy
     onevnet "delete", resource[:name]
@@ -45,12 +45,12 @@ EOF
   def self.onevnet_list
     xml = REXML::Document.new(`onevnet -x list`)
     onevnets = []
-    xml.elements.each("VNET_POOL/VNET/NAME") do |element| 
-      onevnets << element.text 
+    xml.elements.each("VNET_POOL/VNET/NAME") do |element|
+      onevnets << element.text
     end
     onevnets
   end
-    
+
   # Check if a network exists by scanning the onevnet list
   def exists?
     self.class.onevnet_list().include?(resource[:name])
@@ -61,40 +61,40 @@ EOF
     instances = []
     onevnet_list.each do |vnet|
       hash = {}
-        
-      # Obvious resource attributes  
-      hash[:provider] = self.name.to_s 
+
+      # Obvious resource attributes
+      hash[:provider] = self.name.to_s
       hash[:name] = vnet
-      
+
       # Open onevnet xml output using REXML
       xml = REXML::Document.new(`onevnet -x show #{vnet}`)
-        
+
       # Traverse the XML document and populate the common attributes
-      xml.elements.each("VNET/TYPE") { |element| 
-        hash[:type] = element.text == "1" ? "fixed" : "ranged" 
+      xml.elements.each("VNET/TYPE") { |element|
+        hash[:type] = element.text == "1" ? "fixed" : "ranged"
       }
-      xml.elements.each("VNET/BRIDGE") { |element| 
-        hash[:bridge] = element.text 
+      xml.elements.each("VNET/BRIDGE") { |element|
+        hash[:bridge] = element.text
       }
-      xml.elements.each("VNET/PUBLIC") { |element| 
-        hash[:public] = element.text == "1" ? true : false 
+      xml.elements.each("VNET/PUBLIC") { |element|
+        hash[:public] = element.text == "1" ? true : false
       }
-                
+
       # Populate ranged or fixed specific resource attributes
       if hash[:type] == "ranged" then
-        xml.elements.each("VNET/TEMPLATE/NETWORK_SIZE") { |element| 
-          hash[:network_size] = element.text 
+        xml.elements.each("VNET/TEMPLATE/NETWORK_SIZE") { |element|
+          hash[:network_size] = element.text
         }
-        xml.elements.each("VNET/TEMPLATE/NETWORK_ADDRESS") { |element| 
-          hash[:network_address] = element.text 
+        xml.elements.each("VNET/TEMPLATE/NETWORK_ADDRESS") { |element|
+          hash[:network_address] = element.text
         }
       elsif hash[:type] == "fixed" then
         hash[:leases] = []
-        xml.elements.each("VNET/LEASES/LEASE/IP") { |element| 
-          hash[:leases] << element.text 
+        xml.elements.each("VNET/LEASES/LEASE/IP") { |element|
+          hash[:leases] << element.text
         }
       end
-      
+
       instances << new(hash)
     end
 

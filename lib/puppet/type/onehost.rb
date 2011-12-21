@@ -13,21 +13,21 @@ Puppet::Type.newtype(:onehost) do
 
     defaultto :present
   end
-  
+
   newparam(:name) do
     desc "Name of host."
-    
+
     isnamevar
   end
-  
+
   newparam(:im_mad) do
     desc "Information Driver"
   end
-  
+
   newparam(:vm_mad) do
     desc "Virtualization Driver"
   end
-  
+
   newparam(:tm_mad) do
     desc "Transfer Driver"
   end

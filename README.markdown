@@ -167,10 +167,11 @@ Configuring a different storage backend:
       },
     }
 
-Adding hooks for dynamic DNS can be done using the oned_config->hooks parameter area. 
+Adding hooks for dynamic DNS can be done using the oned_config->hooks parameter
+area.
 
-This allows you to have Opennebula automatically update DNS when nodes are created
-and remove DNS entries when nodes are destroyed:
+This allows you to have Opennebula automatically update DNS when nodes are
+created and remove DNS entries when nodes are destroyed:
 
     class { "opennebula::controller":
       oneadmin_password => "something",
@@ -344,5 +345,5 @@ OpenNebula contexts.
 ### oneadmin_pubkey_rsa
 
 This fact returns the contents of the oneadmin users public key. This can be
-used to create SSH trusts between OpenNebula nodes and controllers by exporting 
+used to create SSH trusts between OpenNebula nodes and controllers by exporting
 a resource using this fact as the contents for creating authorized key entries.

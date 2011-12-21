@@ -3,10 +3,10 @@ Puppet::Type.newtype(:onecluster) do
          "wrapper command."
 
   ensurable
-  
+
   newparam(:name) do
     desc "Name of cluster."
-    
+
     isnamevar
 
     validate do |value|

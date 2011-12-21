@@ -2,17 +2,17 @@ require 'rexml/document'
 
 Puppet::Type.type(:onecluster).provide(:onecluster) do
   desc "onecluster provider"
-  
+
   commands :onecluster => "onecluster"
-  
+
   def create
     onecluster "create", resource[:name]
   end
-  
+
   def destroy
     onecluster "delete", resource[:name]
   end
-  
+
   def exists?
     self.class.onecluster_list().include?(resource[:name])
   end

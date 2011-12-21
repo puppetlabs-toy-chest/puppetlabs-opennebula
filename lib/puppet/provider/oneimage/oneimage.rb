@@ -4,9 +4,9 @@ require 'erb'
 
 Puppet::Type.type(:oneimage).provide(:oneimage) do
   desc "oneimage provider"
-  
+
   commands :oneimage => "oneimage"
-  
+
   # Create a network with onevnet by passing in a temporary template.
   def create
     file = Tempfile.new("oneimage-#{resource[:name]}")
@@ -32,7 +32,7 @@ EOF
     #oneimage "register", file.path
     debug(`su oneadmin -c 'oneimage register #{file.path}'`)
   end
-  
+
   # Destroy a network using onevnet delete
   def destroy
     oneimage "delete", resource[:name]
@@ -42,12 +42,12 @@ EOF
   def self.oneimage_list
     xml = REXML::Document.new(`oneimage -x list`)
     oneimages = []
-    xml.elements.each("IMAGE_POOL/IMAGE/NAME") do |element| 
-      oneimages << element.text 
+    xml.elements.each("IMAGE_POOL/IMAGE/NAME") do |element|
+      oneimages << element.text
     end
     oneimages
   end
-    
+
   # Check if a network exists by scanning the onevnet list
   def exists?
     self.class.oneimage_list().include?(resource[:name])
@@ -58,40 +58,40 @@ EOF
     instances = []
     oneimage_list.each do |image|
       hash = {}
-        
-      # Obvious resource attributes  
-      hash[:provider] = self.name.to_s 
+
+      # Obvious resource attributes
+      hash[:provider] = self.name.to_s
       hash[:name] = image
-      
+
       # Open onevnet xml output using REXML
       xml = REXML::Document.new(`oneimage -x show #{image}`)
-        
+
       # Traverse the XML document and populate the common attributes
       xml.elements.each("IMAGE/TEMPLATE/DESCRIPTION") { |element|
         hash[:description] = element.text
       }
-      xml.elements.each("IMAGE/TEMPLATE/TYPE") { |element| 
+      xml.elements.each("IMAGE/TEMPLATE/TYPE") { |element|
         hash[:type] = element.text.downcase
       }
-      xml.elements.each("IMAGE/PUBLIC") { |element| 
-        hash[:public] = element.text == "1" ? true : false 
-      }      
-      xml.elements.each("IMAGE/PERSISTENT") { |element| 
-        hash[:persistent] = element.text == "1" ? true : false 
+      xml.elements.each("IMAGE/PUBLIC") { |element|
+        hash[:public] = element.text == "1" ? true : false
       }
-      xml.elements.each("IMAGE/TEMPLATE/DEV_PREFIX") { |element| 
+      xml.elements.each("IMAGE/PERSISTENT") { |element|
+        hash[:persistent] = element.text == "1" ? true : false
+      }
+      xml.elements.each("IMAGE/TEMPLATE/DEV_PREFIX") { |element|
         hash[:dev_prefix] = element.text
       }
-      xml.elements.each("IMAGE/TEMPLATE/BUS") { |element| 
+      xml.elements.each("IMAGE/TEMPLATE/BUS") { |element|
         hash[:bus] = element.text.downcase
       }
-      xml.elements.each("IMAGE/TEMPLATE/PATH") { |element| 
+      xml.elements.each("IMAGE/TEMPLATE/PATH") { |element|
         hash[:path] = element.text
       }
-      xml.elements.each("IMAGE/TEMPLATE/SOURCE") { |element| 
+      xml.elements.each("IMAGE/TEMPLATE/SOURCE") { |element|
         hash[:source] = element.text
-      }      
-      
+      }
+
       instances << new(hash)
     end
 
