@@ -1,6 +1,8 @@
 Puppet::Type.newtype(:onehost) do
-  @doc = "Type for managing host in OpenNebula using the onehost" +
-         "wrapper command."
+  @doc = <<-EOS
+Type for managing hypervisor hosts in OpenNebula using the onehost wrapper
+command.
+  EOS
 
   ensurable do
     newvalue(:present) do

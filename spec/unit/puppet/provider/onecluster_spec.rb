@@ -1,3 +1,5 @@
+#!/usr/bin/env rspec
+
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:onecluster).provider(:onecluster)

@@ -6,118 +6,183 @@
 #
 # == Parameters
 #
+# === Primary Configuration
+#
+# These elements are the one an average implementor should care the most about.
+#
 # [oneadmin_password]
-#   *Mandatory* Main oneadmin password.
+#   *Mandatory* Main oneadmin password in cleartext. This absolutely must be set as we believe its insecure to define a default here.
+#
+# [oned_config]
+#   *Optional* A hash for configuring oned.conf. This gets passed to the class opennebula::oned_conf. Defaults to undef.
+#
+# === Resources Creation
+#
+# These parameters are specifically for creating resources during creation of
+# the class. This is often used by an ENC system as resources cannot be defined
+# directly by an ENC.
+#
+# Of course, you can always manage these resources independantly. See the
+# the resource documentation for this module for details.
+#
+# [clusters]
+#   *Optional* A list of clusters to create. This list gets passed to the resource onecluster.
+# [cluster_purge]
+#   *Optional* Purge onecluster resources that aren't explicitly defined by Puppet.
+# [hosts]
+#   *Optional* Takes a hash of resource names and parameters to create multiple onehost resources. Defaults to undef.
+# [host_purge]
+#   *Optional* Purge onehost resources that aren't explicitly defined by Puppet.
+# [networks]
+#   *Optional* A list of onevnet hashes to manage via OpenNebula. This gets passed to the resource onevnet.
+# [network_purge]
+#   *Optional* Purge onevnet resources that aren't explicitly defined by Puppet.
+# [vms]
+#   *Optional* A list of onevm hashes to manage via OpenNebula. This gets passed to the resource onevm.
+# [vm_purge]
+#   *Optional* Purge onevm resources that aren't explicitly defined by Puppet.
+# [images]
+#   *Optional* A list of oneimage hash to manage via OpenNebula. This gets passed to the resource oneimage.
+# [image_purge]
+#   *Optional* Purge images that aren't explicitly defined by Puppet.
+#
+# === Advanced Tuning Parameters
+#
+# Ordinary these are best left alone, as the OS detection should handle this.
+#
+# However, these can be useful to override the assumptions made by this modules
+# authors and perhaps support unanticipated scenarios.
+#
 # [controller_package]
 #   *Optional* Package(s) for installing the controller binaries.
 # [controller_service]
 #   *Optional* Service(s) for stopping and starting the controller process.
-# [oned_conf_path]
-#   *Optional* Path to oned.conf.
 # [controller_user]
 #   *Optional* User the oned daemon runs as.
 # [controller_group]
 #   *Optional* Group the oned daemon runs as.
 # [oneadmin_home]
 #   *Optional* Home directory of oneadmin user.
-# [oned_config]
-#   *Optional* A hash for configuring oned.conf. This gets passed to the class opennebula::oned_conf.
-# [clusters]
-#   *Optional* A list of clusters to create. This list gets passed to the resource onecluster.
-# [cluster_purge]
-#   *Optional* Purge clusters that aren't explicitly defined by Puppet.
-# [hosts]
-#   *Optional* A list of onehost hashes to manage via OpenNebula. This gets passed to the resource onehost.
-# [host_purge]
-#   *Optional* Purge hosts that aren't explicitly defined by Puppet.
-# [networks]
-#   *Optional* A list of onevnet hashes to manage via OpenNebula. This gets passed to the resource onevnet.
-# [network_purge]
-#   *Optional* Purge networks that aren't explicitly defined by Puppet.
-# [vms]
-#   *Optional* A list of onevm hashes to manage via OpenNebula. This gets passed to the resource onevm.
-# [vm_purge]
-#   *Optional* Purge vms that aren't explicitly defined by Puppet.
-# [images]
-#   *Optional* A list of oneimage hash to manage via OpenNebula. This gets passed to the resource oneimage.
-# [image_purge]
-#   *Optional* Purge images that aren't explicitly defined by Puppet.
-#
-# == Variables
-#
-# N/A
 #
 # == Examples
 #
 # Basic configuration:
 #
-#   class { 'opennebula::controller':
-#     oneadmin_password => "gavilona",
-#   }
+#     class { 'opennebula::controller':
+#       oneadmin_password => "gavilona",
+#     }
 #
 # Create clusters and hosts at class time:
 #
 #   class { 'opennebula::controller':
-#     oneadmin_password => "gavilona",
+#     oneadmin_password => "gavilona", # We must always set the
+#                                      # oneadmin_password. I recommend hiera-gpg
+#                                      # for storage, not cleartext like this in
+#                                      # code.
 #     hosts => {
-#       "node1" => {
+#       # Here we are defining 2 hypervisors that use SCP transfers for image
+#       # creation and the KVM virtualisation technology.
+#       ["hypervisor1","hypervisor2"] => {
 #         "tm_mad" => "tm_ssh",
 #         "im_mad" => "im_kvm",
 #         "vm_mad" => "vmm_kvm",
 #       }
 #     },
 #     clusters => [
+#       # Make a single cluster called 'ibm_blades'
 #       "ibm_blades",
 #     ],
 #     networks => {
-#       "internal" => {
-#         bridge => "virbr0",
-#         type => "fixed",
-#         public => true,
-#         leases => ["192.168.128.2","192.168.128.3"],
+#       # Create two vnets with 2 IP addresses using named vlans
+#       "vlan300" => { # Internal network perhaps?
+#         bridge   => "vlan300", # I recommend creating a named bridge like this
+#                                # containing the tagged 802.1q interface for
+#                                # vlan300.
+#         type     => "fixed",   # That is, _we_ are going to define the IPs
+#         public   => true,      # Let every oneuser be able to use this vnet
+#         leases   => [
+#           "192.168.128.2",     # As we are type => fixed we must define all 
+#                                # IPs this way. A function to generate this
+#                                # would speed things up.
+#           "192.168.128.3",
+#         ],
+#       }
+#       "vlan301" => { # DMZ network
+#         bridge   => "vlan301",
+#         type     => "fixed",
+#         public   => true,
+#         leases   => ["192.168.129.2","192.168.129.3"],
 #       }
 #     },
 #     vms => {
-#       "box1" => {
-#         memory => "256",
-#         cpu => 1,
-#         vcpu => 1,
-#         os_arch => "x86_64",
-#         disks => [
-#           { type => "disk", source => "/tmp/diskimage", size => 8000, target => "hda", },
-#           { type => "cdrom", source => "/tmp/installos", },
-#         ],
-#         graphics_type => "vnc",
+#       # Create a high memory and cpu instance for the database, inside the
+#       # internal network.
+#       "erpdb1" => {
+#         memory          => "2048",
+#         cpu             => 4,
+#         vcpu            => 4,
+#         os_arch         => "x86_64",
+#         graphics_type   => "vnc",
 #         graphics_listen => "0.0.0.0",
+#         nics            => [
+#           { network => "vlan300",
+#             model => "virtio" }, # virtio is the high performance model
+#         ],
+#         disks           => [
+#           { type   => "disk",
+#             source => "/srv/one/vms/disks/box1.img",
+#             size   => 10000,
+#             target => "hda", },
+#           # Lets mount say a fibre channel target for database storage
+#           { type   => "block",
+#             source => "/dev/disk/by-id/erpdb1-db1",
+#             target => "hdb", },
+#           { type   => "cdrom", 
+#             source => "/srv/one/isos/netboot.iso", },
+#         ],
+#       }
+#       # Create a small instance in the DMZ for the web server.
+#       "erpweb1" => {
+#         memory          => "256",
+#         cpu             => 2,
+#         vcpu            => 2,
+#         os_arch         => "x86_64",
+#         graphics_type   => "vnc",
+#         graphics_listen => "0.0.0.0",
+#         nics            => [
+#           { network => "vlan301",
+#             model   => "virtio" }, # virtio is the high performance model
+#         ],
+#         disks           => [
+#           { type   => "disk",
+#             source => "/srv/one/vms/disks/box1.img",
+#             size   => 10000, 
+#             target => "hda", },
+#           { type   => "cdrom", 
+#             source => "/srv/one/isos/netboot.iso", },
+#         ],
 #       }
 #     }
 #     images => {
 #       "debian-wheezy-64" => {
 #         description => "Debian Wheezy 64 bit image",
-#         path => "/srv/images/debian-wheezy-64.img",
-#         type => "os",
+#         path        => "/srv/one/images/debian-wheezy-64.img",
+#         type        => "os",
 #       }
 #     }
 #   }
 #
-# == Authors
-#
-# Ken Barber <ken@bob.sh>
-#
 # == Copyright
 #
-# Copyright 2011 Puppetlabs Inc, unless otherwise noted.
+# Copyright 2011-2012 Puppetlabs Inc., unless otherwise noted.
 #
 class opennebula::controller (
 
+  # Primary parameters
   $oneadmin_password,
-  $controller_package = $opennebula::params::controller_package,
-  $controller_service = $opennebula::params::controller_service,
-  $oned_conf_path = $opennebula::params::oned_conf_path,
-  $controller_user = $opennebula::params::controller_user,
-  $controller_group = $opennebula::params::controller_group,
-  $oneadmin_home = $opennebula::params::oneadmin_home,
   $oned_config = undef,
+
+  # Resource creators
   $clusters = undef,
   $cluster_purge = false,
   $hosts = undef,
@@ -127,7 +192,15 @@ class opennebula::controller (
   $vms = undef,
   $vm_purge = false,
   $images = undef,
-  $image_purge = false
+  $image_purge = false,
+
+  # Advanced tunables
+  $controller_package = $opennebula::params::controller_package,
+  $controller_service = $opennebula::params::controller_service,
+  $oned_conf_path = $opennebula::params::oned_conf_path,
+  $controller_user = $opennebula::params::controller_user,
+  $controller_group = $opennebula::params::controller_group,
+  $oneadmin_home = $opennebula::params::oneadmin_home
 
   ) inherits opennebula::params {
 
@@ -151,9 +224,13 @@ class opennebula::controller (
     mode => "0640",
     require => Package[$controller_package],
   }
+
+  # Setup the root users authentication
+  #
+  # TODO: we should look up the users home dir somehow
   file { "/root/.one":
     ensure => directory,
-  }
+  }->
   file { $oneadmin_authfile_root:
     content => "oneadmin:${oneadmin_password}\n",
     owner => "root",
@@ -187,12 +264,15 @@ class opennebula::controller (
   # Oned Config #
   ###############
   if ($oned_config) {
+    # Monopolize create_resources to pass the config hash to the oned_config
+    # sub-class.
     $config_hash = { 
       "opennebula::oned_conf" => $oned_config,   
     }
     create_resources("class", $config_hash)
   } else {
-    include opennebula::oned_conf
+    # If not defined, just call oned_conf on its own.
+    class { "opennebula::oned_conf": }
   }
   
   ################
