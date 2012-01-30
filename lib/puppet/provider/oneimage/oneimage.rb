@@ -29,8 +29,8 @@ EOF
     tempfile = template.result(binding)
     file.write(tempfile)
     file.close
-    #oneimage "register", file.path
-    debug(`su oneadmin -c 'oneimage register #{file.path}'`)
+    oneimage "register", file.path
+    # debug(`su oneadmin -c 'oneimage register #{file.path}'`)
   end
 
   # Destroy a network using onevnet delete
