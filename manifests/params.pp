@@ -1,12 +1,17 @@
 # OpenNebula parameter class. This provides variables to the opennebula module.
-# Not to be used directly.
+#
+# *Warning:* Not to be used directly in user content.
 #
 # === OS Support
+#
+# Currently we only resolve parameters for the following operatingsystems:
 #
 # * Debian
 # * Ubuntu
 #
-# == Variables
+# If your operatingsystem fact doesn't match this list, we fail.
+#
+# === Variables
 #
 # This is a list of variables that must be set for each operating system.
 # 
@@ -31,26 +36,26 @@
 # [curl_package]
 #   Package(s) for curl.
 #
-# == Authors
-#
-# Ken Barber <ken@bob.sh>
-#
 # == Copyright
 #
-# Copyright 2011 Puppetlabs Inc, unless otherwise noted.
+# Copyright 2011-2012 Puppetlabs Inc, unless otherwise noted.
 #
 class opennebula::params {
 
   case $operatingsystem {
     'ubuntu', 'debian': {
-      $node_package = "opennebula-node"
+      # opennebula::controller params
       $controller_package = "opennebula"
       $controller_service = "opennebula"
-      $oned_conf_path = "/etc/one/oned.conf"
       $controller_user = "oneadmin"
       $controller_group = "cloud"
-      $sinatra_package = "libsinatra-ruby"
       $oneadmin_home = "/var/lib/one/"
+
+      # opennebula::oned_config params (called by opennebula::controler)
+      $oned_conf_path = "/etc/one/oned.conf"
+
+      $node_package = "opennebula-node"
+      $sinatra_package = "libsinatra-ruby"
       $econe_conf_path = "/etc/one/econe.conf"
       $curl_package = ["curl", "libcurl4-openssl-dev"]
       $sunstone_package = "opennebula-sunstone"

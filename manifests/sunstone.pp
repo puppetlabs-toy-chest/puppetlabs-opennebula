@@ -2,24 +2,23 @@
 #
 # == Parameters
 #
-# [TODO]
-#   *Optional* TODO
+# === General Parameters
 #
-# == Variables
+# [*port*]
+#   *Optional* Port for sunstone to listen on.
 #
-# N/A
+# === Advanced Tunables
+#
+# [*sunstone_package*]
+#   *Optional* The package to use for installing sunstone.
 #
 # == Examples
 #
 # Basic example:
 #
-#   # You must always include the controller
-#   class { 'opennebula::controller': oneadmin_password => "foo" }
-#   class { 'opennebula::sunstone': }
-#
-# == Authors
-#
-# PuppetLabs <info@puppetlabs.com>
+#     # You must always include the controller
+#     class { 'opennebula::controller': oneadmin_password => "foo" }
+#     class { 'opennebula::sunstone': }
 #
 # == Copyright
 #
@@ -27,13 +26,8 @@
 #
 class opennebula::sunstone (
   
-  $one_xmlrpc = "http://localhost:2633/RPC2",
-  $port = 4567,
-  $server = $fqdn,
-  $sinatra_package = $opennebula::params::sinatra_package,
-  $curl_package = $opennebula::params::curl_package,
-  $sunstone_package = $opennebula::params::sunstone_package,
-  $sunstone_conf_path = $opennebula::params::sunstone_conf_path
+  $port = 4568,
+  $sunstone_package = $opennebula::params::sunstone_package
   
   ) inherits opennebula::params {
     
@@ -52,7 +46,7 @@ class opennebula::sunstone (
   ############
   service { "sunstone":
     ensure => running,
-    start => "/usr/bin/sunstone-server -H 0.0.0.0 -p 4568 start",
+    start => "/usr/bin/sunstone-server -H 0.0.0.0 -p ${port} start",
     stop => "/usr/bin/sunstone-server start",
     provider => "base",
     require => Package[$sunstone_package],

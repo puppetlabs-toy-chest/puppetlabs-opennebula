@@ -18,23 +18,15 @@
 # [curl_package]
 #   *Optional* Package(s) for installing curl.
 #
-# == Variables
-#
-# N/A
-#
 # == Examples
 #
 # Basic example:
 #
-#   # You must always include the controller
-#   class { 'opennebula::controller': oneadmin_password => "foo" }
-#   class { 'opennebula::econe': 
-#     one_server => "one.mydomain.com",
-#   }
-#
-# == Authors
-#
-# Ken Barber <ken@bob.sh>
+#     # You must always include the controller
+#     class { 'opennebula::controller': oneadmin_password => "foo" }
+#     class { 'opennebula::econe': 
+#       one_server => "one.mydomain.com",
+#     }
 #
 # == Copyright
 #

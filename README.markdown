@@ -154,7 +154,7 @@ Configuring clusters, networks and hosts all at the same time:
       clusters => [ "smallboxes", "bigboxes" ],
     }
     
-Configuring a different storage backend:
+Here we configure a mysql storage backend using the oned_config parameter:
 
     class { "opennebula::controller":
       oneadmin_password => "something",
@@ -167,11 +167,11 @@ Configuring a different storage backend:
       },
     }
 
-Adding hooks for dynamic DNS can be done using the oned_config->hooks parameter
-area.
+Adding hooks that fire upon certain VM states can be done using the
+oned_config=>hooks parameter area.
 
-This allows you to have Opennebula automatically update DNS when nodes are
-created and remove DNS entries when nodes are destroyed:
+This allows you for example, to have Opennebula automatically update DNS when
+nodes are created and remove DNS entries when nodes are destroyed:
 
     class { "opennebula::controller":
       oneadmin_password => "something",
