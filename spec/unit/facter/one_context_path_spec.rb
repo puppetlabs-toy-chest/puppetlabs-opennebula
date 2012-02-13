@@ -1,4 +1,6 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env rspec
+
+require 'spec_helper'
 
 describe "one_context_path fact" do
   it "should return context path" do

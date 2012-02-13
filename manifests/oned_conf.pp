@@ -4,7 +4,7 @@
 #
 # == Parameters
 #
-# A lot of these parameters are documented on the Opennebula website in more detail.
+# These parameters are documented on the Opennebula website in more detail.
 #
 # [manager_time]
 #   *Optional* 
@@ -47,10 +47,6 @@
 # [hooks]
 #   *Optional*
 #
-# == Variables
-#
-# N/A
-#
 # == Examples
 #
 # Basic example:
@@ -58,10 +54,6 @@
 #     class { "opennebula::oned_conf":
 #       port => 2633,
 #     }
-#
-# == Authors
-#
-# Ken Barber <ken@bob.sh>
 #
 # == Copyright
 #

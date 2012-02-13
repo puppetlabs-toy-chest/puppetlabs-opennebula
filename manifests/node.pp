@@ -6,24 +6,14 @@
 #   *Mandatory* Hostname of controller.
 # [node_package]
 #   *Optional* Package(s) for installing the node.
-# [oneadmin_home]
-#   *Optional* Home directory of oneadmin user.
-#
-# == Variables
-#
-# N/A
 #
 # == Examples
 #
 # Basic example:
 #
-#   class { 'opennebula::node':
-#     controller => 'one1.mydomain.com',
-#   }
-#
-# == Authors
-#
-# Ken Barber <ken@bob.sh>
+#     class { 'opennebula::node':
+#       controller => 'one1.mydomain.com',
+#     }
 #
 # == Copyright
 #
@@ -32,8 +22,7 @@
 class opennebula::node (
   
   $controller,
-  $node_package = $opennebula::params::node_package,
-  $oneadmin_home = $opennebula::params::oneadmin_home
+  $node_package = $opennebula::params::node_package
   
   ) inherits opennebula::params {
 
